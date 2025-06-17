@@ -1,1 +1,6 @@
 venv/
+screenshots/
+__pycache__/
+*.pyc
+venv/
+.env

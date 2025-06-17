@@ -10,6 +10,9 @@ import embedding
 # Jinja2 templates setup
 templates = Jinja2Templates(directory="templates")
 
+# Debug mode (default: False)
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+
 # Load OpenAI API key from environment variable
 openai_api_key = os.getenv("OPENAI_API_KEY")
 if not openai_api_key: # missing API key check
@@ -27,7 +30,12 @@ async def lifespan(app: FastAPI):
     yield
 
 # Create FastAPI app instance with lifespan
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    docs_url="/docs" if DEBUG else None,
+    redoc_url="/redoc" if DEBUG else None,
+    openapi_url="/openapi.json" if DEBUG else None,
+    lifespan=lifespan
+)
 
 # Include the authentication router
 app.include_router(auth_router)
