@@ -75,6 +75,13 @@ Check out [`example-questions.md`](example-questions.md) for a list of ready-to-
 
 ---
 
+## 📄 Technical Decisions
+
+For a deeper look into architectural decisions, trade-offs, and ideas for scaling or productionizing the app, check out the  
+👉 [DECISIONS.md](./DECISIONS.md)
+
+---
+
 ## 📸 Screenshots
 
 ### 🔐 Login Page
