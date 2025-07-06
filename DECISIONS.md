@@ -69,12 +69,3 @@ This captures semantic meaning, not just keyword overlap.
 * **Search History**: Audit logs per user
 * **Multi-language Support**
 * **Offline Mode**: Local embeddings via sentence-transformers
-
----
-
-## ⏱️ Time Spent
-
-Due to the difficult situation in the country, I began the project a day after receiving the assignment and not under ideal conditions.
-I estimate the total focused time I spent was between 3 to 4 hours.
-
-I was working from my parents’ home on a slower computer, which affected development speed slightly. No human assistance was involved — I only used permitted AI tools.
