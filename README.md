@@ -30,7 +30,7 @@ echo OPENAI_API_KEY= > .env & echo USER=user >> .env & echo PASS=password >> .en
 
 💠 Windows PowerShell:
 ```bash
-echo OPENAI_API_KEY= > .env & echo USER=user >> .env & echo PASS=password >> .env & echo DEBUG=True >> .env
+echo OPENAI_API_KEY= | Out-File .env -Encoding UTF8; echo USER=user | Add-Content .env; echo PASS=password | Add-Content .env; echo DEBUG=True | Add-Content .env
 ```
 
 🍎 macOS / 🐧 Linux / Git Bash:
