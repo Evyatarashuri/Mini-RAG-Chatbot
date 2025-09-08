@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Ask a Question{% endblock %}
+
+{% block content %}
+<h2>Ask a Question</h2>
+
+{% if error %}
+<p style="color:red">{{ error }}</p>
+{% endif %}
+
+{% if question %}
+<p><b>Your question:</b> {{ question }}</p>
+{% endif %}
+
+{% if answer %}
+<p style="color:green"><b>Answer:</b> {{ answer }}</p>
+{% if cached %}
+<p><i>(cached)</i></p>
+{% endif %}
+{% endif %}
+
+<form method="post" action="/query">
+    <label for="question">Question:</label>
+    <input type="text" id="question" name="question" required>
+
+    <button type="submit">Ask</button>
+</form>
+{% endblock %}

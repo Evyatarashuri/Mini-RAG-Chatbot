@@ -1,10 +1,10 @@
-# 🧱 Technical Decisions & Scaling Plan
+# Technical Decisions & Scaling Plan
 
 This document outlines key architectural decisions, trade-offs, and how the system could be scaled or productionized beyond this demo.
 
 ---
 
-## 📌 Project Flow
+## Project Flow
 
 1. **PDF Ingestion**: On startup, the app loads all PDFs from the `data/` directory, splits them into chunks, and embeds them using OpenAI Embeddings.
 
@@ -30,13 +30,13 @@ This captures semantic meaning, not just keyword overlap.
 
 ## ⚖️ Key Trade-Offs
 
-* ✅ **Speed & Simplicity**: In-memory storage makes the app fast and simple.
-* ❌ **No Persistence**: All embeddings are lost on restart.
-* ❌ **Limited Scalability**: Not suitable for large volumes of data or users.
+**Speed & Simplicity**: In-memory storage makes the app fast and simple.
+**No Persistence**: All embeddings are lost on restart.
+**Limited Scalability**: Not suitable for large volumes of data or users.
 
 ---
 
-## 🏗️ Architectural Improvements for Scale
+## Architectural Improvements for Scale
 
 ### User & Auth Management
 
@@ -62,7 +62,7 @@ This captures semantic meaning, not just keyword overlap.
 
 ---
 
-## ✨ Future Feature Enhancements
+## Future Feature Enhancements
 
 * **User PDF Uploads**: Upload → store (e.g., S3) → async embed
 * **Dashboard**: View uploaded files and queries
