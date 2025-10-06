@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Logout{% endblock %}
+
+{% block content %}
+<h2>Logout</h2>
+
+<p style="color:green">You have been successfully logged out.</p>
+<p>Redirecting to the <a href="/login">login page</a>...</p>
+
+<script>
+    setTimeout(() => {
+        window.location.href = "/login";
+    }, 2000);
+</script>
+{% endblock %}

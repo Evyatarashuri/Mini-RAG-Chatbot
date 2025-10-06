@@ -1,4 +1,40 @@
-venv/
-.env
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+*.db
+
+# Environment
+.env
+.env.*
+*.env
+
+# IDE / OS
+.DS_Store
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Docker / runtime
+/data/
+*.pid
+*.sock
+
+# Build / cache
+*.egg-info/
+celerybeat-schedule
+
+# FAISS / model data
+*.index
+*.npy
+
+# Mongo dumps or local DBs
+*.bson
+*.json
+
+# Tests / coverage
+.coverage
+htmlcov/

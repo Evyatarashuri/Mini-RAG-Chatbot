@@ -14,12 +14,6 @@ def create_embedding(text: str):
     return response.data[0].embedding
 
 
-def chunk_text(text: str, max_words=200):
-    """Split text into shorter chunks."""
-    words = text.split()
-    return [" ".join(words[i:i + max_words]) for i in range(0, len(words), max_words)]
-
-
 def ask_openai(prompt: str) -> str:
     """Send a request to OpenAI and receive a response."""
     response = client.chat.completions.create(
