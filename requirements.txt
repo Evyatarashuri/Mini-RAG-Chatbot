@@ -12,3 +12,6 @@ python-jose[cryptography]
 pydantic-settings
 python-multipart
 jinja2
+celery
+kafka-python-ng
+pytest

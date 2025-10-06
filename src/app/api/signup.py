@@ -1,3 +1,4 @@
+from pathlib import Path
 from fastapi import APIRouter, Form, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -6,7 +7,9 @@ from datetime import datetime, timezone
 from app.core.security import hash_password, create_access_token
 
 
-templates = Jinja2Templates(directory="src/templates")
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 router = APIRouter(prefix="/signup", tags=["signup"])
 

@@ -5,9 +5,13 @@ from app.services import embedding_service
 from app.db.faiss_store import faiss_store
 from app.db.redis import redis_client
 from app.api.auth import get_current_user_from_cookie
-from src.app.core.security import decode_access_token
+from app.core.security import decode_access_token
+from pathlib import Path
 
-templates = Jinja2Templates(directory="src/templates")
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 router = APIRouter(prefix="/query", tags=["query"])
 
@@ -47,7 +51,7 @@ async def query_post(request: Request, question: str = Form(...)):
         )
 
     query_emb = embedding_service.create_embedding(question)
-    results = faiss_store.search(query_emb, top_k=3)
+    results = faiss_store.search(query_emb, top_k=5)
     if not results:
         return templates.TemplateResponse(
             "query.html",
