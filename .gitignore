@@ -38,3 +38,6 @@ celerybeat-schedule
 # Tests / coverage
 .coverage
 htmlcov/
+
+
+/src/uploads/
