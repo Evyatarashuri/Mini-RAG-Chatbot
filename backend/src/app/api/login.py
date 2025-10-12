@@ -35,7 +35,8 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), request: Reque
         key="access_token",
         value=f"Bearer {token}",
         httponly=True,
-        samesite="lax",
+        samesite="none",
+        secure=False,  # Set to True in production with HTTPS
         path="/"
     )
     return response

@@ -28,14 +28,14 @@ async def signup(username: str = Form(...), password: str = Form(...), request: 
         )
 
     hashed = hash_password(password)
-    users_collection.insert_one({
+    result = users_collection.insert_one({
         "username": username,
         "password": hashed,
         "role": "user",
         "created_at": datetime.now(timezone.utc)
     })
 
-    token = create_access_token({"sub": username, "username": username})
+    token = create_access_token({"sub": str(result.inserted_id), "username": username})
 
     response = RedirectResponse(url="/query", status_code=303)
     response.set_cookie(

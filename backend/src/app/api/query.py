@@ -1,11 +1,10 @@
-from fastapi import APIRouter, Form, Depends, HTTPException, Request, Cookie
+from fastapi import APIRouter, Form, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from app.services import embedding_service
 from app.db.faiss_store import faiss_store
 from app.db.redis import redis_client
-from app.api.auth import get_current_user_from_cookie
-from app.core.security import decode_access_token
+from app.core.config import settings
 from pathlib import Path
 
 
@@ -20,7 +19,7 @@ router = APIRouter(prefix="/query", tags=["query"])
 async def query_form(request: Request):
     user = getattr(request.state, "user", None)
     if not user:
-        return templates.TemplatesResponse(
+        return templates.TemplateResponse(
             "query.html", {"request": request, "user": "Not authenticated"}
         )
     
@@ -71,7 +70,7 @@ Question:
 """
     answer = embedding_service.ask_openai(prompt)
 
-    redis_client.setex(cache_key, 60 * 5, answer)
+    redis_client.setex(cache_key, settings.REDIS_CACHE_TTL, answer)
 
     return templates.TemplateResponse(
         "query.html",

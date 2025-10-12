@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     # Redis
     REDIS_HOST: str
     REDIS_PORT: int
+    REDIS_CACHE_TTL: int = 300  # seconds
 
     # JWT
     SECRET_KEY: str
