@@ -5,10 +5,10 @@ services:
     build: .
     container_name: fastapi_app
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-    working_dir: /code
+    working_dir: /code/backend/src
     volumes:
-      - ./src:/code
-      - ./tests:/code/tests
+      - ./backend/src:/code/backend/src
+      - ./backend/tests:/code/backend/tests
       - faiss_data:/data
     env_file: .env
     ports:
@@ -25,9 +25,9 @@ services:
     build: .
     container_name: celery_worker
     command: celery -A app.core.celery_app worker --loglevel=info
-    working_dir: /code
+    working_dir: /code/backend/src
     volumes:
-      - ./src:/code
+      - ./backend/src:/code/backend/src
     env_file: .env
     depends_on:
       redis:
@@ -72,50 +72,65 @@ services:
 
   uploaded-consumer:
     build: .
+    container_name: uploaded_consumer
     command: python -m app.main_uploaded_consumer
-    working_dir: /code
+    working_dir: /code/backend/src
     volumes:
-      - ./src:/code
+      - ./backend/src:/code/backend/src
       - faiss_data:/data
+    env_file: .env
     depends_on:
       kafka:
         condition: service_healthy
       mongo:
         condition: service_started
-    env_file: .env
     environment:
       - KAFKA_BROKER=kafka:9092
 
   processed-consumer:
     build: .
+    container_name: processed_consumer
     command: python -m app.main_processed_consumer
-    working_dir: /code
+    working_dir: /code/backend/src
     volumes:
-      - ./src:/code
+      - ./backend/src:/code/backend/src
       - faiss_data:/data
+    env_file: .env
     depends_on:
       kafka:
         condition: service_healthy
       mongo:
         condition: service_started
-    env_file: .env
     environment:
       - KAFKA_BROKER=kafka:9092
 
   notifier-consumer:
     build: .
+    container_name: notifier_consumer
     command: python -m app.main_notifier_consumer
-    working_dir: /code
+    working_dir: /code/backend/src
     volumes:
-      - ./src:/code
+      - ./backend/src:/code/backend/src
+    env_file: .env
     depends_on:
       kafka:
         condition: service_healthy
       mongo:
         condition: service_started
-    env_file: .env
     environment:
       - KAFKA_BROKER=kafka:9092
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "3000:80"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+    depends_on:
+      - fastapi_app
 
 volumes:
   mongo_data:
