@@ -28,6 +28,7 @@ async def signup(username: str = Form(...), password: str = Form(...), request: 
         )
 
     hashed = hash_password(password)
+    
     result = users_collection.insert_one({
         "username": username,
         "password": hashed,
@@ -37,7 +38,9 @@ async def signup(username: str = Form(...), password: str = Form(...), request: 
 
     token = create_access_token({"sub": str(result.inserted_id), "username": username})
 
-    response = RedirectResponse(url="/query", status_code=303)
+    response = RedirectResponse(url="/profile", status_code=303)
+
+    # Save the token in the browser cookies
     response.set_cookie(
         key="access_token",
         value=f"Bearer {token}",
@@ -45,4 +48,5 @@ async def signup(username: str = Form(...), password: str = Form(...), request: 
         samesite="lax",
         path="/"
     )
+    
     return response

@@ -2,7 +2,6 @@ from pathlib import Path
 from fastapi import APIRouter, UploadFile, Depends, HTTPException, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from app.api.auth import get_current_user_from_cookie
 from app.db.mongo import documents_collection
 from app.kafka_events.producer import publish_document_uploaded
 from bson import ObjectId
@@ -22,19 +21,21 @@ async def upload_form(request: Request):
     """
     Display the upload form page.
     """
+    user = getattr(request.state, "user", None)
+    if not user:
+        return templates.TemplateResponse(
+            "upload.html", {"request": request, "error": "Not authenticated"}
+        )
     return templates.TemplateResponse("upload.html", {"request": request})
 
 
 @router.post("/", response_class=HTMLResponse)
-async def upload_pdf(
-    request: Request,
-    file: UploadFile,
-    description: str = Form(""),
-    user: dict = Depends(get_current_user_from_cookie)
-):
+async def upload_pdf(request: Request, file: UploadFile, description: str = Form("")):
     """
     Handle uploaded PDF file, save it to disk, log to MongoDB, and trigger Kafka event.
     """
+    user = getattr(request.state, "user", None)
+    
     if not file.filename.lower().endswith(".pdf"):
         return templates.TemplateResponse(
             "upload.html",

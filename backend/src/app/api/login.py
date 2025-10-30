@@ -30,12 +30,14 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), request: Reque
 
     token = create_access_token({"sub": str(user["_id"]), "username": user["username"]})
 
-    response = RedirectResponse(url="/query", status_code=303)
+    response = RedirectResponse(url="/profile", status_code=303)
+
+    # Save the token in the browser cookies
     response.set_cookie(
         key="access_token",
         value=f"Bearer {token}",
         httponly=True,
-        samesite="none",
+        samesite="lax",
         secure=False,  # Set to True in production with HTTPS
         path="/"
     )
