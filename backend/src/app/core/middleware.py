@@ -5,7 +5,7 @@ from app.core.security import decode_access_token
 from app.db.mongo import users_collection
 from bson import ObjectId
 from fastapi.responses import JSONResponse
-
+from app.core.logging import logger
 
 def setup_middlewares(app: FastAPI):
     """
@@ -29,7 +29,7 @@ def setup_middlewares(app: FastAPI):
     @app.middleware("http")
     async def auth_middleware(request: Request, call_next):
         """JWT middleware that supports both Header and Cookie"""
-        if request.url.path.startswith(("/documents", "/query")):
+        if request.url.path.startswith(("/documents", "/query", "/profile")):
             token = None
 
             auth_header = request.headers.get("Authorization")
@@ -38,7 +38,6 @@ def setup_middlewares(app: FastAPI):
 
             if not token:
                 cookie_token = request.cookies.get("access_token")
-                print(f"[DEBUG] Cookie token: {cookie_token}")  # Debug log
                 if cookie_token:
                     # Support both "Bearer TOKEN" and just "TOKEN"
                     if cookie_token.startswith("Bearer "):
@@ -47,30 +46,30 @@ def setup_middlewares(app: FastAPI):
                         token = cookie_token
 
             if not token:
-                print(f"[DEBUG] Missing token for path: {request.url.path}")  # Debug log
+                logger.debug(f"Missing token for path: {request.url.path}")
                 return JSONResponse(status_code=401, content={"error": "Missing token"})
 
             try:
                 payload = decode_access_token(token)
-                print(f"[DEBUG] Decoded payload: {payload}")  # Debug log
+                logger.debug(f"Decoded payload: {payload}")
                 if not payload:
-                    print("[DEBUG] Invalid or expired token")  # Debug log
+                    logger.debug("Invalid or expired token")
                     return JSONResponse(status_code=401, content={"error": "Invalid or expired token"})
 
                 user_id = payload.get("sub")
                 if not user_id or not ObjectId.is_valid(user_id):
-                    print(f"[DEBUG] Invalid user ID: {user_id}")  # Debug log
+                    logger.debug(f"Invalid user ID: {user_id}")
                     return JSONResponse(status_code=401, content={"error": "Invalid user ID in token"})
 
                 user = users_collection.find_one({"_id": ObjectId(user_id)})
                 if not user:
-                    print(f"[DEBUG] User not found: {user_id}")  # Debug log
+                    logger.debug(f"User not found: {user_id}")
                     return JSONResponse(status_code=401, content={"error": "User not found"})
 
                 request.state.user = user
 
             except Exception as e:
-                print(f"[DEBUG] Exception in auth middleware: {str(e)}")  # Debug log
+                logger.debug(f"Exception in auth middleware: {str(e)}")  # Debug log
                 return JSONResponse(status_code=401, content={"error": str(e)})
 
         response = await call_next(request)

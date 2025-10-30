@@ -120,18 +120,6 @@ services:
     environment:
       - KAFKA_BROKER=kafka:9092
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: frontend
-    ports:
-      - "3000:80"
-    environment:
-      - REACT_APP_API_URL=http://localhost:8000
-    depends_on:
-      - fastapi_app
-
 volumes:
   mongo_data:
   kafka_data:

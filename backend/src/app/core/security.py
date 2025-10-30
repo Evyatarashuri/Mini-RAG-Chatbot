@@ -1,3 +1,4 @@
+from app.core.logging import logger
 import bcrypt
 from datetime import datetime, timedelta, timezone
 from jose import jwt, JWTError
@@ -37,16 +38,17 @@ def create_access_token(data: dict, expires_delta: int | timedelta = 60):
 
 
 def decode_access_token(token: str):
+    """
+    Decode a JWT token and return the payload.
+    Returns None if the token is invalid or expired.
+    """
     try:
-        print(f"[DEBUG] Decoding token: {token[:50]}...")  # Debug log
-        print(f"[DEBUG] Using SECRET_KEY: {settings.SECRET_KEY[:10]}...")  # Debug log
-        print(f"[DEBUG] Using ALGORITHM: {settings.ALGORITHM}")  # Debug log
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        print(f"[DEBUG] Successfully decoded payload: {payload}")  # Debug log
+        logger.debug(f"Successfully decoded payload: {payload}")
         return payload
     except JWTError as e:
-        print(f"[DEBUG] JWTError: {str(e)}")  # Debug log
+        logger.debug(f"JWTError: {str(e)}")
         return None
     except Exception as e:
-        print(f"[DEBUG] Unexpected error in decode: {str(e)}")  # Debug log
+        logger.debug(f"Unexpected error in decode: {str(e)}")
         return None

@@ -21,19 +21,33 @@ class FaissStore:
         self._save()
         logger.info(f"[faiss_store] Added {len(vectors)} vectors, total={self.index.ntotal}")
 
-    def search(self, query_vector, top_k=5):
-        # Always reload before searching
+
+    def search(self, query_vector, user_id, top_k=5):
+
         self.reload()
+        
         if self.index.ntotal == 0:
             logger.warning("[faiss_store] No vectors available for search")
             return []
-        D, I = self.index.search(np.array([query_vector]).astype("float32"), top_k)
-        results = []
+        
+        D, I = self.index.search(np.array([query_vector]).astype("float32"), top_k * 5)
+
+        filtered_results = []
+
         for i, idx in enumerate(I[0]):
             if idx == -1 or idx >= len(self.vectors):
                 continue
-            results.append((self.vectors[idx], float(D[0][i])))
-        return results
+
+            metadata = self.vectors[idx]
+
+            if metadata.get("user_id") == user_id:
+                filtered_results.append((metadata, float(D[0][i])))
+
+            if len(filtered_results) >= top_k:
+                break
+
+        return filtered_results
+
 
     def _save(self):
         os.makedirs("/data", exist_ok=True)
